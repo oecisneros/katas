@@ -8,7 +8,7 @@
         | HLF of Reg // Sets register r to half its current value, then continues with the next instruction.
         | TPL of Reg // Sets register r to triple its current value, then continues with the next instruction.
         | INC of Reg // Increments register r, adding 1 to it, then continues with the next instruction.
-        | JMP of Offset // Ss a jump; it continues with the instruction offset away relative to itself.
+        | JMP of Offset // Is a jump; it continues with the instruction offset away relative to itself.
         | JIE of Reg * Offset // Offset is like jmp, but only jumps if register r is even ("jump if even").
         | JIO of Reg * Offset // Offset is like jmp, but only jumps if register r is 1 ("jump if one", not odd).
 
@@ -58,8 +58,8 @@
     let rec run (program: Inst[]) a b pos =
         match (Array.tryItem pos program) with
         | Some inst ->
-            let (x, y, pos') = eval inst a b pos
-            run program x y pos'
+            let (a', b', pos') = eval inst a b pos
+            run program a' b' pos'
         | _ -> a, b
 
     let instructions = [|
