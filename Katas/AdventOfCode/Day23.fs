@@ -3,6 +3,16 @@
     // --- Day 23: Opening the Turing Lock ---
     // https://adventofcode.com/2015/day/23
 
+    let private isOne = (=) 1
+
+    let private isEven x = (x % 2) = 0
+
+    let private half' = (/) >> (|>) 2
+
+    let private triple' = (*) 3
+
+    let private incr' = (+) 1
+
     type private Reg = A | B
 
     type private Offset = Plus of int | Minus of int
@@ -15,16 +25,6 @@
         | JIE of Reg * Offset // Is like jmp, but only jumps if register r is even ("jump if even").
         | JIO of Reg * Offset // Is like jmp, but only jumps if register r is 1 ("jump if one", not odd).
 
-    let private isOne = (=) 1
-
-    let private isEven x = (x % 2) = 0
-
-    let private half' x = x / 2
-
-    let private triple' = (*) 3
-
-    let private incr' = (+) 1
-
     let private oper (fn: int -> int) reg a b pos =
         match reg with
         | A -> fn a, b, pos + 1
@@ -35,7 +35,7 @@
         | Plus x -> a, b, pos + x
         | Minus x -> a, b, pos - x
 
-    let private jumpfn (fn: int -> bool) offset reg a b pos =
+    let private jumpIf (fn: int -> bool) offset reg a b pos =
         let x = match reg with A -> a | B -> b
         if fn x then (jump offset a b pos) else a, b, pos + 1
 
@@ -45,9 +45,9 @@
 
     let private incr = oper incr'
 
-    let private jie = jumpfn isEven
+    let private jie = jumpIf isEven
 
-    let private jio = jumpfn isOne
+    let private jio = jumpIf isOne
 
     let private eval inst a b pos =
         match inst with
@@ -67,7 +67,7 @@
 
     let test =
         //Puzzle 1 => A: 2 B: 0
-        //Puzzle 2 => A: 1 B: 334
+        //Puzzle 2 => A: 1 B: 255
         //Puzzle 3 => A: 1 B: 334
 
         let instructions = [|
@@ -132,7 +132,7 @@
         printfn "Puzzle 1 => A: %i B: %i" x y
 
         let (x', y') = run instructions' 0 0 0
-        printfn "Puzzle 1 => A: %i B: %i" x' y'
+        printfn "Puzzle 2 => A: %i B: %i" x' y'
 
         let (x'', y'') = run instructions' 1 0 0
-        printfn "Puzzle 2 => A: %i B: %i" x'' y''
+        printfn "Puzzle 3 => A: %i B: %i" x'' y''
